@@ -297,21 +297,29 @@ post '/table' do
 	  		end	
 	  		if data_hash_key == 'bp' or data_hash_key == 'sp' 
 	  			if data_hash['spc'] == "1"
-	  				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " UAH"
+	  				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " грн."
 	  			elsif  data_hash['spc'] == "2"
-	 				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " USD"
+	 				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " $"
 	  			elsif  data_hash['spc'] == "3"
-	  				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " EUR"
+	  				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " &euro;"
 	  			elsif  data_hash['spc'] == "4"
 	  				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].to_s + " PLN"
 	  			end	
 	  		end
+	  		if data_hash_key == 'productiondate'
+	  			if data_hash_value == nil
+	  				all_data_array[all_data_array_index][data_hash_key] = ""
+	  			else
+		  		production_date = all_data_array[all_data_array_index][data_hash_key].scan(/\d{2}(\d{2})\s+(\d{2})/).flatten
+		  		all_data_array[all_data_array_index][data_hash_key] = production_date[1].to_s + production_date[0].to_s
+		  		end
+		  	end
 	  		if data_hash_key == 'actualdate'
 		  		data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/).flatten
 		  		all_data_array[all_data_array_index][data_hash_key] = data_date[2].to_s + "/" + data_date[1].to_s + "/" + data_date[0].to_s
 		  	end
 		  	if data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp'
-		  		all_data_array[all_data_array_index][data_hash_key ] = all_data_array[all_data_array_index][data_hash_key ].to_s + " UAH"
+		  		all_data_array[all_data_array_index][data_hash_key ] = all_data_array[all_data_array_index][data_hash_key ].to_s + " грн."
 		  	end  		
 		end
 	end
