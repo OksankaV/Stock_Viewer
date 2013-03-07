@@ -4,21 +4,26 @@ require 'sinatra'
 require 'sqlite3'
 require 'json'
 require "cgi"
+set :protection, :except => :ip_spoofing
 
-enable :sessions
+p Time.now.strftime("%H:%M:%S.%L")
 
 if File.exists?("tyre.db")
     db = SQLite3::Database.new("tyre.db")
 end
 
+Title = "Каталог шин"
 
 Tyre_providers = db.execute("select distinct supplier from price")
 Tyre_size = db.execute("select distinct sectionsize from price order by sectionsize asc").flatten
+p Time.now.strftime("supplier, sectionsize %H:%M:%S.%L")
 Tyre_diameter = db.execute("select distinct diameterc from price order by diameterc asc").flatten
 Tyre_season = db.execute("select distinct season from price order by diameterc asc").flatten
 Seasons = ["невідомо", "літо", "зима", "в/c"]
-
+p Time.now.strftime("diameterc, season %H:%M:%S.%L")
 tyre_family_brand_name = db.execute("select distinct family, brand from price")
+p Time.now.strftime("family, brand %H:%M:%S.%L")
+
 tyre_family_brand = {}
 
 
@@ -83,18 +88,13 @@ end
 
 
 get '/' do
-    @title = "Фільтр"
     @message = "Для пошуку даних обов'язково введіть параметр Ширина/Висота"
     @message_no_data = "Немає даних, що відповідають вибраним значенням"
-    p @select_brands = select_values(params[:tyre_brand_selected],params[:tyre_brand_typeahead],Tyre_brand_name)
-    p "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-    p params
-    p params[:tyre_family_selected]
-    p params[:tyre_family_typeahead]
-    p @select_families = select_values(params[:tyre_family_selected],params[:tyre_family_typeahead],Tyre_family_name)
-    p @select_sizes = select_values(params[:tyre_size_selected],params[:tyre_size_typeahead],Tyre_size)
-    p @select_diameters = select_values(params[:tyre_diameter_selected],params[:tyre_diameter_typeahead],Tyre_diameter)
-    p @select_seasons = select_values(params[:tyre_season_selected],Seasons.index(params[:tyre_season_typeahead]).to_s,Tyre_season)
+    @select_brands = select_values(params[:tyre_brand_selected],params[:tyre_brand_typeahead],Tyre_brand_name)
+    @select_families = select_values(params[:tyre_family_selected],params[:tyre_family_typeahead],Tyre_family_name)
+    @select_sizes = select_values(params[:tyre_size_selected],params[:tyre_size_typeahead],Tyre_size)
+    @select_diameters = select_values(params[:tyre_diameter_selected],params[:tyre_diameter_typeahead],Tyre_diameter)
+    @select_seasons = select_values(params[:tyre_season_selected],Seasons.index(params[:tyre_season_typeahead]).to_s,Tyre_season)
 
 	if params[:tyre_date_selected] == nil
     	@select_date = ""
@@ -121,7 +121,6 @@ get '/' do
 		help_array = []
 		Tyre_family_brand_name.each_pair do |brand,brand_families|
 			if @select_brands.include?(brand)
-				p "yyyyyyyyyyeeeeeeeeeeeeeeeeeesssssssssssssssss"
 				brand_families.each do |one_family|
 					tyre_family_help_array.push(one_family)
 				end	
@@ -141,8 +140,7 @@ get '/' do
 	make_href(@select_sizes,"&size","&size[]")
 	make_href(@select_diameters,"&diameter","&diameter[]")
 	make_href(@select_seasons,"&season","&season[]")
-	p 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT'
-	p @table_url= @table_href
+	@table_url= @table_href
 	@show_table = false
 	if @select_sizes.empty? == false
 		if params[:press_submit_button] == "true"
@@ -154,31 +152,29 @@ get '/' do
 	else 
 		@message = "Для пошуку даних обов'язково введіть параметр Ширина/Висота"	
 	end
+	
 
     erb :filter
 
 end
 
 post '/table' do
-	p "---------------------------------"
-	p params
-	p "---------------------------------"
 	@bind_hash = {}	
-	p select_brands = params[:brand]
+	select_brands = params[:brand]
 	select_brands = "" if select_brands == nil 	
-    p select_families = params[:family]
+    select_families = params[:family]
     select_families = "" if select_families == nil 
-    p select_sizes = params[:size]
-    p select_diameters = params[:diameter]
+    select_sizes = params[:size]
+    select_diameters = params[:diameter]
     select_diameters = "" if select_diameters == nil 
-    p select_seasons = params[:season]
+    select_seasons = params[:season]
     select_seasons = "" if select_seasons == nil 
-    p select_date = params[:date]
+    select_date = params[:date]
     select_date = "" if select_date == nil 
-    p sortname_column = params[:sortname]
-    p rp_number = params[:rp]
-    p page_number = params[:page]
-    p sortorder_value = params[:sortorder]
+    sortname_column = params[:sortname]
+    rp_number = params[:rp]
+    page_number = params[:page]
+    sortorder_value = params[:sortorder]
     
     
     select_id = "select * from price where"
@@ -256,19 +252,13 @@ post '/table' do
 	end
 	
 	select_count = select_id.gsub(/\*/,"count(*)")
-	p "++++++++++++++++++++++++++"
-	p select_count 
 	
 	rows_count = db.execute(select_count, @bind_hash)
 
 
 	offset_value = page_number.to_i * rp_number.to_i - rp_number.to_i.to_i
 	select_id = select_id + "order by " + sortname_column + " " + sortorder_value + " limit " + rp_number + " offset " + offset_value.to_s
-	
-	p "++++++++++++++++++++++++++"
-	p select_id 
-	
-	
+		
 		
 	all_data_array = []
 	select_all_data = db.execute(select_id, @bind_hash)
@@ -311,7 +301,7 @@ post '/table' do
 	  			end	
 	  		end
 	  		if data_hash_key == 'actualdate'
-		  		data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/)
+		  		p data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/).flatten
 		  		all_data_array[all_data_array_index][data_hash_key] = data_date[2].to_s + "/" + data_date[1].to_s + "/" + data_date[0].to_s
 		  	end
 		  	if data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp'
