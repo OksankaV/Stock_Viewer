@@ -88,6 +88,7 @@ end
 
 
 get '/' do
+	p Time.now.strftime("begin get / %H:%M:%S.%L")
     @message = "Для пошуку даних обов'язково введіть параметр Ширина/Висота"
     @message_no_data = "Немає даних, що відповідають вибраним значенням"
     @select_brands = select_values(params[:tyre_brand_selected],params[:tyre_brand_typeahead],Tyre_brand_name)
@@ -95,7 +96,8 @@ get '/' do
     @select_sizes = select_values(params[:tyre_size_selected],params[:tyre_size_typeahead],Tyre_size)
     @select_diameters = select_values(params[:tyre_diameter_selected],params[:tyre_diameter_typeahead],Tyre_diameter)
     @select_seasons = select_values(params[:tyre_season_selected],Seasons.index(params[:tyre_season_typeahead]).to_s,Tyre_season)
-
+	
+	
 	if params[:tyre_date_selected] == nil
     	@select_date = ""
     else
@@ -112,7 +114,7 @@ get '/' do
 			@select_date = params[:input_date]
 		end
 	end	
-
+p Time.now.strftime("@select %H:%M:%S.%L")
 
 	tyre_family_help_array = [] 
     if @select_brands.empty?
@@ -128,7 +130,7 @@ get '/' do
 		end	
     end
     @tyre_family_help_array = tyre_family_help_array
-	
+p Time.now.strftime("help %H:%M:%S.%L")	
 	@table_href = ""
 	if @select_date.empty?  
 		@table_href += "date="
@@ -142,6 +144,7 @@ get '/' do
 	make_href(@select_seasons,"&season","&season[]")
 	@table_url= @table_href
 	@show_table = false
+p Time.now.strftime("href %H:%M:%S.%L")	
 	if @select_sizes.empty? == false
 		if params[:press_submit_button] == "true"
 			@press_submit_button = true
@@ -153,7 +156,7 @@ get '/' do
 		@message = "Для пошуку даних обов'язково введіть параметр Ширина/Висота"	
 	end
 	
-
+	p Time.now.strftime("end %H:%M:%S.%L")
     erb :filter
 
 end
@@ -276,9 +279,12 @@ post '/table' do
 			if data_hash_value.class == Float	
 	  			all_data_array[all_data_array_index][data_hash_key] = (data_hash_value*100).round.to_f/100
 	  		end	
+	  		if data_hash_key == 'remain' && data_hash_value == 0
+	  			all_data_array[all_data_array_index]['remain'] = "уточнюйте"
+	  		end
 	  		if data_hash_key == 'moreflag' && data_hash_value == 1
 	  			all_data_array[all_data_array_index]['remain'] = ">" + all_data_array[all_data_array_index]['remain'].to_s
-	  		end
+	  		end	  		
 	  		if data_hash_key == 'runflat'
 	  			if data_hash_value == 1
 	  				all_data_array[all_data_array_index][data_hash_key] = "Так"
@@ -301,7 +307,7 @@ post '/table' do
 	  			end	
 	  		end
 	  		if data_hash_key == 'actualdate'
-		  		p data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/).flatten
+		  		data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/).flatten
 		  		all_data_array[all_data_array_index][data_hash_key] = data_date[2].to_s + "/" + data_date[1].to_s + "/" + data_date[0].to_s
 		  	end
 		  	if data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp'
