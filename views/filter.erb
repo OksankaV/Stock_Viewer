@@ -108,9 +108,20 @@
 				return "<div>" + item + "</div>"
 				}
 		});
+		
+		$('html').click(function() {
+		   	$('').val('');
+			$('#tyre_season_typeahead').typeahead('hide');
+		});
+		$('#tyre_season_typeahead').click(function(event){
+		   event.stopPropagation();
+		});
+		$('.showAll').click(function(event){
+		   event.stopPropagation();
+		});
 
 
-		$(".showAll").click(function(event) {
+		$('.showAll').click(function(event) {
 			var  input = $('#tyre_season_typeahead');
 			if(input.data('typeahead').shown == true) 
 			{ 
@@ -125,8 +136,9 @@
 		        input.val('');
 			}
 		});
+
 		
-		$("#datepicker").datepicker({
+		$('#datepicker').datepicker({
 			format: 'dd/mm/yyyy',
 			weekStart: 1,
 			language: 'uk',
