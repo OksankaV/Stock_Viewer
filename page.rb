@@ -20,6 +20,7 @@ p Time.now.strftime("supplier, sectionsize %H:%M:%S.%L")
 Tyre_diameter = db.execute("select distinct diameterc from price order by diameterc asc").flatten
 Tyre_season = db.execute("select distinct season from price order by diameterc asc").flatten
 Seasons = ["невідомо", "літо", "зима", "в/c"]
+p Remain = Array.new(10000){ |index| index.to_s}
 p Time.now.strftime("diameterc, season %H:%M:%S.%L")
 tyre_family_brand_name = db.execute("select distinct family, brand from price")
 p Time.now.strftime("family, brand %H:%M:%S.%L")
@@ -114,7 +115,27 @@ get '/' do
 			@select_date = params[:input_date]
 		end
 	end	
-p Time.now.strftime("@select %H:%M:%S.%L")
+	
+	if params[:tyre_remain_selected] == nil
+    	@select_remain = ""
+    else
+    	if params[:tyre_remain_selected] != ""
+    		@select_remain = params[:tyre_remain_selected]
+    	else
+    		@select_remain = ""
+    	end	
+    end
+    if params[:tyre_remain_typeahead] == nil
+    	@select_remain = ""
+    else	
+		if params[:tyre_remain_typeahead] != ""
+			@select_remain = params[:tyre_remain_typeahead]
+		end
+	end	
+	
+	
+	
+	p Time.now.strftime("@select %H:%M:%S.%L")
 
 	tyre_family_help_array = [] 
     if @select_brands.empty?
@@ -136,6 +157,11 @@ p Time.now.strftime("help %H:%M:%S.%L")
 		@table_href += "date="
 	else	
 		@table_href += "date=" + @select_date
+	end
+	if @select_remain.empty?  
+		@table_href += "&remain="
+	else	
+		@table_href += "&remain=" + @select_remain
 	end	
 	make_href(@select_brands,"&brand","&brand[]")
 	make_href(@select_families,"&family","&family[]")
@@ -174,6 +200,8 @@ post '/table' do
     select_seasons = "" if select_seasons == nil 
     select_date = params[:date]
     select_date = "" if select_date == nil 
+    select_remain = params[:remain]
+    select_remain = "" if select_remain == nil 
     sortname_column = params[:sortname]
     rp_number = params[:rp]
     page_number = params[:page]
@@ -246,13 +274,19 @@ post '/table' do
 		select_id =  select_id + " ) "
 	end
 	
-	
+	if select_remain.empty? == false
+		select_id = select_id + " and (remain >= :remain) "
+		@bind_hash["remain".to_sym] = select_remain
+	end
+	p select_id 
 	
 	if select_date.empty? == false
 		select_id = select_id + " and (actualdate >= :date) "
 		date = select_date.scan(/(\d+)\/(\d+)\/(\d+)/).flatten
 		@bind_hash["date".to_sym] = Time.gm(date[2],date[1],date[0]).strftime("%Y-%m-%d %H:%M:%S")
 	end
+	
+	
 	
 	select_count = select_id.gsub(/\*/,"count(*)")
 	
