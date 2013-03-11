@@ -182,6 +182,11 @@
 			$("#press_submit_button").attr("value","true");
 			send_form();
 		}
+		
+		function reset_filter_form(){	
+			$("#press_reset_button").attr("value","true");
+			send_form();
+		}
 
 		function change_families(){
 			var brand = new Array();;
@@ -262,6 +267,12 @@
 			overflow: hidden; 
 			text-overflow: ellipsis; 
 	   	}
+	   	.rp_dropdown
+		{
+			height: 25px;
+			width: 70px;
+			padding: 2px;
+		}
 	   	.span3 { margin-left: 1%; }
 
 		.row-fluid .span21, .row-fluid .span22 {
@@ -274,6 +285,7 @@
 		.span4 .input-append{
 			cursor: pointer;
 		}
+		
 	</style>
 </head>
 
@@ -433,11 +445,11 @@
 			<div class="span3">
 				<div class="input-append">
 					<input id="tyre_season_typeahead" name="tyre_season_typeahead" type="text" class="input-block-level span19" autocomplete="off" data-provide="typeahead"/>
-					<span class="showAll add-on" >
-						<div align="center" class="span4">
+					<div class="showAll add-on">
+						<div align="center">
 							<i class="icon-chevron-down"></i> 
-						</div>	
-					</span>
+						</div>		
+					</div>
 				</div>
 			</div>
 			<div class="span3">
@@ -453,21 +465,29 @@
 			<div class="span3">
 				<div class="input-append date" id="datepicker"  data-date-format="dd/mm/yyyy" autocomplete="off">
 					<input id="input_date" name="input_date" class="span19" type="text">
-					<span class="add-on showDate">
-						<div align="center" class="span4">
+					<div class="add-on showDate">
+						<div align="center">
 							<i class="icon-calendar"></i>
-						</div>
-					</span>
+						</div>	
+					</div>
 				</div>
 			</div>	
 		</div>
 		<input id="press_submit_button" name="press_submit_button" type="hidden" value="false">
+		<input id="press_reset_button" name="press_reset_button" type="hidden" value="false">
 		<div class="row-fluid">
-			<div class="span24">
+			<div class="span16">
 				<%if @select_sizes.empty? == false and @select_sizes != nil%>
 					<button id="filter_submit" class="btn btn-block btn-primary" type="button" onclick="submit_filter_form()"><strong>Пошук</strong></button>
 				<%else%>
 					<button class="btn btn-block disabled" type="button"><strong>Пошук</strong></button>
+				<%end%>	
+			</div>
+			<div class="span8">
+				<%if @select_sizes.empty? == false and @select_sizes != nil or @select_diameters.empty? == false and @select_diameters != nil or @select_seasons.empty? == false and @select_seasons != nil or @select_remain.empty? == false and @select_remain != nil or @select_brands.empty? == false and @select_brands != nil or @select_families.empty? == false and @select_families != nil or @select_date.empty? == false and @select_date != nil%>
+					<button id="filter_reset" class="btn btn-block btn-primary" type="button" onclick="reset_filter_form()"><strong>Очистити фільтри</strong></button>
+				<%else%>
+					<button class="btn btn-block disabled" type="button"><strong>Очистити фільтри</strong></button>
 				<%end%>	
 			</div>
 		</div>	

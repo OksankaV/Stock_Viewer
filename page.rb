@@ -20,7 +20,7 @@ p Time.now.strftime("supplier, sectionsize %H:%M:%S.%L")
 Tyre_diameter = db.execute("select distinct diameterc from price order by diameterc asc").flatten
 Tyre_season = db.execute("select distinct season from price order by diameterc asc").flatten
 Seasons = ["невідомо", "літо", "зима", "в/c"]
-p Remain = Array.new(10000){ |index| index.to_s}
+Remain = Array.new(10000){ |index| index.to_s}
 p Time.now.strftime("diameterc, season %H:%M:%S.%L")
 tyre_family_brand_name = db.execute("select distinct family, brand from price")
 p Time.now.strftime("family, brand %H:%M:%S.%L")
@@ -92,49 +92,58 @@ get '/' do
 	p Time.now.strftime("begin get / %H:%M:%S.%L")
     @message = "Для пошуку даних обов'язково введіть параметр Ширина/Висота"
     @message_no_data = "Немає даних, що відповідають вибраним значенням"
-    @select_brands = select_values(params[:tyre_brand_selected],params[:tyre_brand_typeahead],Tyre_brand_name)
-    @select_families = select_values(params[:tyre_family_selected],params[:tyre_family_typeahead],Tyre_family_name)
-    @select_sizes = select_values(params[:tyre_size_selected],params[:tyre_size_typeahead],Tyre_size)
-    @select_diameters = select_values(params[:tyre_diameter_selected],params[:tyre_diameter_typeahead],Tyre_diameter)
-    @select_seasons = select_values(params[:tyre_season_selected],Seasons.index(params[:tyre_season_typeahead]).to_s,Tyre_season)
-	
-	
-	if params[:tyre_date_selected] == nil
-    	@select_date = ""
-    else
-    	if params[:tyre_date_selected] != ""
-    		@select_date = params[:tyre_date_selected]
-    	else
-    		@select_date = ""
-    	end	
-    end
-    if params[:input_date] == nil
-    	@select_date = ""
+    p params[:press_reset_button]
+    if params[:press_reset_button] == "true"
+    	@select_brands = []
+		@select_families = []
+		@select_sizes = []
+		@select_diameters = []
+		@select_seasons = []
+		@select_date = ""
+		@select_remain = ""
     else	
-		if params[:input_date] != ""
-			@select_date = params[:input_date]
+		@select_brands = select_values(params[:tyre_brand_selected],params[:tyre_brand_typeahead],Tyre_brand_name)
+		@select_families = select_values(params[:tyre_family_selected],params[:tyre_family_typeahead],Tyre_family_name)
+		@select_sizes = select_values(params[:tyre_size_selected],params[:tyre_size_typeahead],Tyre_size)
+		@select_diameters = select_values(params[:tyre_diameter_selected],params[:tyre_diameter_typeahead],Tyre_diameter)
+		@select_seasons = select_values(params[:tyre_season_selected],Seasons.index(params[:tyre_season_typeahead]).to_s,Tyre_season)
+
+		if params[:tyre_date_selected] == nil
+			@select_date = ""
+		else
+			if params[:tyre_date_selected] != ""
+				@select_date = params[:tyre_date_selected]
+			else
+				@select_date = ""
+			end	
 		end
-	end	
+		if params[:input_date] == nil
+			@select_date = ""
+		else	
+			if params[:input_date] != ""
+				@select_date = params[:input_date]
+			end
+		end	
 	
-	if params[:tyre_remain_selected] == nil
-    	@select_remain = ""
-    else
-    	if params[:tyre_remain_selected] != ""
-    		@select_remain = params[:tyre_remain_selected]
-    	else
-    		@select_remain = ""
-    	end	
-    end
-    if params[:tyre_remain_typeahead] == nil
-    	@select_remain = ""
-    else	
-		if params[:tyre_remain_typeahead] != ""
-			@select_remain = params[:tyre_remain_typeahead]
+		if params[:tyre_remain_selected] == nil
+			@select_remain = ""
+		else
+			if params[:tyre_remain_selected] != ""
+				@select_remain = params[:tyre_remain_selected]
+			else
+				@select_remain = ""
+			end	
 		end
-	end	
+		if params[:tyre_remain_typeahead] == nil
+			@select_remain = ""
+		else	
+			if params[:tyre_remain_typeahead] != ""
+				@select_remain = params[:tyre_remain_typeahead]
+			end
+		end	
 	
-	
-	
+	end
+
 	p Time.now.strftime("@select %H:%M:%S.%L")
 
 	tyre_family_help_array = [] 
@@ -168,7 +177,7 @@ p Time.now.strftime("help %H:%M:%S.%L")
 	make_href(@select_sizes,"&size","&size[]")
 	make_href(@select_diameters,"&diameter","&diameter[]")
 	make_href(@select_seasons,"&season","&season[]")
-	@table_url= @table_href
+	p @table_url= @table_href
 	@show_table = false
 p Time.now.strftime("href %H:%M:%S.%L")	
 	if @select_sizes.empty? == false
