@@ -416,13 +416,15 @@
 				} else {
 					p.total = data.total;
 				}
-				if (p.total === 0) {
+
+				if (p.total == 0) {
 					$('tr, a, td, div', t).unbind();
 					$(t).empty();
 					p.pages = 1;
 					p.page = 1;
 					this.buildpager();
 					$('.pPageStat', this.pDiv).html(p.nomsg);
+					$('.flexigrid').replaceWith('<div id="message_id" class="alert alert-info" align="center"><strong>Результатів немає. Спробуйте спростити фільтр.</strong></div>');
                     if (p.onSuccess) p.onSuccess(this);
 					return false;
 				}
@@ -1473,6 +1475,7 @@
 		}
 		return t;
 	};
+	
 	var docloaded = false;
 	$(document).ready(function () {
 		docloaded = true;
@@ -1490,6 +1493,7 @@
 			}
 		});
 	}; //end flexigrid
+	
 	$.fn.flexReload = function (p) { // function to reload grid
 		return this.each(function () {
 			if (this.grid && this.p.url) this.grid.populate();
