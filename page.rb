@@ -284,7 +284,7 @@ post '/table' do
 	end
 	
 	if select_remain.empty? == false
-		select_id = select_id + " and (remain >= :remain) "
+		select_id = select_id + " and (remain >= :remain or remain = 0) "
 		@bind_hash["remain".to_sym] = select_remain
 	end
 	p select_id 
@@ -322,12 +322,12 @@ post '/table' do
 			if data_hash_value.class == Float	
 	  			all_data_array[all_data_array_index][data_hash_key] = (data_hash_value*100).round.to_f/100
 	  		end	
-	  		if data_hash_key == 'remain' && data_hash_value == 0
-	  			all_data_array[all_data_array_index]['remain'] = "уточнюйте"
-	  		end
-	  		if data_hash_key == 'moreflag' && data_hash_value == 1
+	  		if data_hash_key == 'remain' && data_hash_value == 0 
+	  			all_data_array[all_data_array_index]['remain'] = "невідомо"
+	  		end 	
+	  		if data_hash_key == 'moreflag' && data_hash_value == 1 && all_data_array[all_data_array_index]['remain'] != "невідомо"
 	  			all_data_array[all_data_array_index]['remain'] = ">" + all_data_array[all_data_array_index]['remain'].to_s
-	  		end	  		
+	  		end	 	
 	  		if data_hash_key == 'runflat'
 	  			if data_hash_value == 1
 	  				all_data_array[all_data_array_index][data_hash_key] = "Так"
