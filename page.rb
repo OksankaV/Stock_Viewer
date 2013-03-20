@@ -321,11 +321,8 @@ post '/table' do
 		data_hash.each_pair do |data_hash_key, data_hash_value|
 			if data_hash_value.class == Float	
 	  			all_data_array[all_data_array_index][data_hash_key] = data_hash_value.round(2)
-	  		end	
-	  		if data_hash_key == 'remain' and data_hash_value == 0 
-	  			all_data_array[all_data_array_index]['remain'] = "невідомо"
-	  		end 	
-	  		if data_hash_key == 'moreflag' and data_hash_value == 1 and all_data_array[all_data_array_index]['remain'] != "невідомо"
+	  		end		
+	  		if data_hash_key == 'moreflag' and data_hash_value == 1 
 	  			all_data_array[all_data_array_index]['remain'] = ">" + all_data_array[all_data_array_index]['remain'].to_s
 	  		end	 	
 	  		if data_hash_key == 'runflat'
@@ -338,7 +335,7 @@ post '/table' do
 	  		if data_hash_key == 'season' 
 	  			all_data_array[all_data_array_index][data_hash_key] = Seasons[data_hash_value.to_i]
 	  		end	
-	  		if (data_hash_key == 'bp' or data_hash_key == 'sp') and (all_data_array[all_data_array_index]['sp'] != 0 or all_data_array[all_data_array_index]['sp'] != "невідомо")
+	  		if (data_hash_key == 'sp') and (all_data_array[all_data_array_index]['sp'] != 0 or all_data_array[all_data_array_index]['sp'] != "невідомо")
 	  			if data_hash['spc'] == "1"
 	  				all_data_array[all_data_array_index][data_hash_key] = all_data_array[all_data_array_index][data_hash_key].ceil.to_s + " грн."
 	  			elsif  data_hash['spc'] == "2"
@@ -349,7 +346,7 @@ post '/table' do
 	  				all_data_array[all_data_array_index][data_hash_key] = (all_data_array[all_data_array_index][data_hash_key] + 0.0499999).round(1).to_s + " PLN"
 	  			end
 	  		end
-	  		if (data_hash_key == 'bp' or data_hash_key == 'sp') and (all_data_array[all_data_array_index]['sp'] == 0 or all_data_array[all_data_array_index]['sp'] == "невідомо")
+	  		if (data_hash_key == 'sp') and (all_data_array[all_data_array_index]['sp'] == 0 or all_data_array[all_data_array_index]['sp'] == "невідомо")
 	  			all_data_array[all_data_array_index][data_hash_key] = "невідомо"	
 	  		end
 	  		if data_hash_key == 'productiondate'
@@ -364,10 +361,10 @@ post '/table' do
 		  		data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/).flatten
 		  		all_data_array[all_data_array_index][data_hash_key] = data_date[2].to_s + "/" + data_date[1].to_s + "/" + data_date[0].to_s
 		  	end
-		  	if (data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] != 0 or all_data_array[all_data_array_index]['sp'] != "невідомо")
+		  	if (data_hash_key == 'bp' or data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] != 0 or all_data_array[all_data_array_index]['sp'] != "невідомо")
 		  		all_data_array[all_data_array_index][data_hash_key ] = all_data_array[all_data_array_index][data_hash_key ].ceil.to_s + " грн."
 		  	end
-		  	if (data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] == 0 or all_data_array[all_data_array_index]['sp'] == "невідомо")
+		  	if (data_hash_key == 'bp' or data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] == 0 or all_data_array[all_data_array_index]['sp'] == "невідомо")
 	  			all_data_array[all_data_array_index][data_hash_key] = "невідомо"		
 		  	end  		
 		end

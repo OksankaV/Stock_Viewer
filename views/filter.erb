@@ -19,7 +19,9 @@
 	
 
 	<script type="text/javascript">
+
 	$(document).ready(function() {
+		
 		$("#data_table").flexigrid({
 			url: "/table?<%=@table_url%>",
 			dataType: "json",
@@ -123,12 +125,31 @@
 		   	$('').val('');
 			$('#tyre_season_typeahead').typeahead('hide');
 		});
+		
 		$('#tyre_season_typeahead').click(function(event){
 		   event.stopPropagation();
 		});
+		
 		$('.showAll').click(function(event){
 		   event.stopPropagation();
 		});
+		
+		<%if @select_sizes.empty? or @select_sizes == nil%>
+			$("#tyre_size_typeahead").focus();
+		<%elsif @select_diameters.empty? or @select_diameters == nil%>
+			$("#tyre_diameter_typeahead").focus();
+		<%elsif @select_seasons.empty? or @select_seasons == nil%>
+			$("#tyre_season_typeahead").focus();
+		<%elsif @select_remain.empty? or @select_remain== nil%>
+			$("#tyre_remain_typeahead").focus();
+		<%elsif @select_brands.empty? or @select_brands == nil%>
+			$("#tyre_brand_typeahead").focus();
+		<%elsif @select_families.empty? or @select_families == nil%>
+			$("#tyre_family_typeahead").focus();
+		<%elsif @select_date.empty? or @select_date == nil%>
+			$("#input_date").focus();
+		<%end%>	
+	
 
 
 		$('.showAll').click(function(event) {
@@ -161,8 +182,25 @@
 			add_to_filter('date',item);
 		});
 		
+		$("input:text").keypress(function(event) {
+			if (event.which == 13 && $(this).val() == "") 
+			{
+				submit_filter_form();
+			}
+		});
+		
+		$(document).keypress(function(event) {
+			if ($("input:text").is(":focus") == false)
+			{
+				if (event.which == 13) 
+				{
+					submit_filter_form();
+				}
+			}
+		});	
+		
 	});
-
+	
 		function check_typeahead(id,array){
 			for (var i=0;i<array.length;i++){
 				if (array[i] == item){
@@ -287,8 +325,8 @@
 	</style>
 </head>
 
-<body id="dt_example">
-	<div id="container" class="container" >
+<body>
+	<div class="container" >
 	<form method="GET" id="filter_form" action="">
 		<div class="row-fluid">
 			<div class="span4 well_family">
@@ -464,8 +502,8 @@
 	
 			<div class="span3">
 				<div class="row-fluid">
-				<div class="input-append date" id="datepicker"  data-date-format="dd/mm/yyyy" autocomplete="off">
-					<input id="input_date" name="input_date" class="span19" type="text">
+				<div class="input-append date" id="datepicker"  data-date-format="dd/mm/yyyy">
+					<input id="input_date" name="input_date" class="span19" type="text" autocomplete="off">
 					<div class="add-on showDate">
 						<div align="center">
 							<i class="icon-calendar"></i>
