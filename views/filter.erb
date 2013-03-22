@@ -41,7 +41,6 @@
 				{display: 'Гуртова ціна', name : 'bp', width : 70, sortable : true, align: 'left'},
 				{display: 'Вхідна ціна', name : 'sp', width : 70, sortable : true, align: 'left'},
 				{display: 'Гуртова ціна з ПДВ', name : 'bpvat', width : 100, sortable : true, align: 'left'},
-				{display: 'Гуртова ціна для ПП', name : 'bppe', width : 110, sortable : true, align: 'left'},
 				{display: 'Дата', name : 'actualdate', width : 70, sortable : true, align: 'left'},
 				{display: 'Вхідний рядок', name : 'sourcestring', width : 600, sortable : true, align: 'left'}
 				],
@@ -185,6 +184,7 @@
 		$("input:text").keypress(function(event) {
 			if (event.which == 13 && $(this).val() == "") 
 			{
+				$("#search_button").hover();
 				submit_filter_form();
 			}
 		});
@@ -194,6 +194,7 @@
 			{
 				if (event.which == 13) 
 				{
+					$("#search_button").hover();
 					submit_filter_form();
 				}
 			}
@@ -520,7 +521,7 @@
 				<%if @select_sizes.empty? == false and @select_sizes != nil%>
 					<button id="filter_submit" class="btn btn-block btn-primary" type="button" onclick="submit_filter_form()"><strong>Пошук</strong></button>
 				<%else%>
-					<button class="btn btn-block disabled" type="button"><strong>Пошук</strong></button>
+					<button id="search_button" class="btn btn-block disabled" type="button"><strong>Пошук</strong></button>
 				<%end%>	
 			</div>
 			<div class="span8">

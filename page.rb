@@ -40,7 +40,7 @@ Tyre_family_brand_name = tyre_family_brand
 Tyre_family_name = tyre_family
 
 Data_field = ['id', 'brand', 'family', 'origin', 'comment', 'remain', 'moreflag', 'supplier', 'sp', 'spc', 'sourcestring', 'minimalorder', 'deliverytyme', 'suppliercomment', 'actualdate', 'runflat', 'sidewall', 'productiondate', 'diameterc', 'application', 'season', 'traileraxle', 'steeringaxle', 'driveaxle', 'dimensiontype', 'sectionsize', 'bp', 'bpvat', 'bppe', 'rp', 'rpvat', 'rppe']
-Show_data_field = ['brand', 'family', 'dimensiontype', 'sidewall', 'origin', 'runflat', 'productiondate', 'season', 'bp', 'remain', 'supplier', 'rp', 'sp', 'suppliercomment', 'bpvat', 'bppe', 'actualdate', 'sourcestring']
+Show_data_field = ['brand', 'family', 'dimensiontype', 'sidewall', 'origin', 'runflat', 'productiondate', 'season', 'bp', 'remain', 'supplier', 'rp', 'sp', 'suppliercomment', 'bpvat', 'actualdate', 'sourcestring']
 
     Tyre_family_brand_name.each_pair do |brand,families|
     	Tyre_family_brand_name[brand] = []
@@ -361,10 +361,10 @@ post '/table' do
 		  		data_date = all_data_array[all_data_array_index][data_hash_key].scan(/(\d+)[-|\s+]/).flatten
 		  		all_data_array[all_data_array_index][data_hash_key] = data_date[2].to_s + "/" + data_date[1].to_s + "/" + data_date[0].to_s
 		  	end
-		  	if (data_hash_key == 'bp' or data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] != 0 or all_data_array[all_data_array_index]['sp'] != "невідомо")
+		  	if (data_hash_key == 'bp' or data_hash_key == 'bpvat' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] != 0 or all_data_array[all_data_array_index]['sp'] != "невідомо")
 		  		all_data_array[all_data_array_index][data_hash_key ] = all_data_array[all_data_array_index][data_hash_key ].ceil.to_s + " грн."
 		  	end
-		  	if (data_hash_key == 'bp' or data_hash_key == 'bpvat' or data_hash_key == 'bppe' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] == 0 or all_data_array[all_data_array_index]['sp'] == "невідомо")
+		  	if (data_hash_key == 'bp' or data_hash_key == 'bpvat' or data_hash_key == 'rpvat' or data_hash_key == 'rppe' or data_hash_key == 'rp') and (all_data_array[all_data_array_index]['sp'] == 0 or all_data_array[all_data_array_index]['sp'] == "невідомо")
 	  			all_data_array[all_data_array_index][data_hash_key] = "невідомо"		
 		  	end  		
 		end
